@@ -1,0 +1,32 @@
+C:\Users\joaoc\AppData\Local\Temporary Projects\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe.config
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe.config
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.pdb
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.xml
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Resources.resources
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.vbproj.GenerateResource.Cache
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.exe
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.xml
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.pdb
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 2\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Form_Controller.resources
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe.config
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.exe
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.xml
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.pdb
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.pdb
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.xml
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Form_Controller.resources
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Resources.resources
+D:\Projetos\Projeto Solitec, Audio Generator for Speakers\Versão 3\H 1.13 F 1.59\Visual Studio 2012\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.vbproj.GenerateResource.Cache
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe.config
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.exe
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.xml
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.pdb
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.pdb
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.xml
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.vbprojResolveAssemblyReference.cache
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Form_Controller.resources
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Resources.resources
+C:\Users\raset\Desktop\Visual Studio 2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.vbproj.GenerateResource.Cache
