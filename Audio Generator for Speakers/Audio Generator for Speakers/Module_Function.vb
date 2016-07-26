@@ -117,11 +117,9 @@ Module Module_Function
         Dim Control As String = Decoder.Substring(2, 3)
         Dim Data As String = Decoder.Substring(5, 64)
 
-        'Dim ControllerSytring As String
-        'Dim DataWrite As String
-        'Dim DataEqualizer As String
-
         Try
+
+            Form_Controller._TimerUsartRx.Stop()
 
             If Header.Equals("RC") Then
 
@@ -164,11 +162,11 @@ Module Module_Function
 
                 RecordRecipe()
 
-                If readrecipecontroll = True And readrecipeindex < 500 Then
-                    readrecipeindex = readrecipeindex + 1
+                If recipecontroll = True And recipeindex < 500 Then
+                    recipeindex = recipeindex + 1
                     ReadAllRecipes()
                 Else
-                    readrecipecontroll = False
+                    recipecontroll = False
                 End If
 
             End If
@@ -216,7 +214,7 @@ Fim:
 
         Dim pointer As String
 
-        pointer = readrecipeindex.ToString
+        pointer = recipeindex.ToString
 
         For i As Integer = 0 To 2 - pointer.Length
             pointer = "0" + pointer

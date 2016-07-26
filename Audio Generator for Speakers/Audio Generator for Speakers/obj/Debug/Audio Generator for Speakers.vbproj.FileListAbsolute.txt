@@ -30,3 +30,14 @@ C:\Users\raset\Documents\GitHub\Visual-Studio-2015\Audio Generator for Speakers\
 C:\Users\raset\Documents\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Form_Controller.resources
 C:\Users\raset\Documents\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Resources.resources
 C:\Users\raset\Documents\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.vbproj.GenerateResource.Cache
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe.config
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.exe
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.xml
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.pdb
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.exe
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.pdb
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\bin\Debug\Audio Generator for Speakers.xml
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.vbprojResolveAssemblyReference.cache
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Form_Controller.resources
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio_Generator_for_Speakers.Resources.resources
+C:\Users\raset\OneDrive\Documentos\GitHub\Visual-Studio-2015\Audio Generator for Speakers\Audio Generator for Speakers\obj\Debug\Audio Generator for Speakers.vbproj.GenerateResource.Cache

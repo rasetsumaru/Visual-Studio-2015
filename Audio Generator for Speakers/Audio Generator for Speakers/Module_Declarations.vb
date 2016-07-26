@@ -21,13 +21,16 @@ Module Module_Declarations
     Public UsartTx As String
     Public UsartConnected As Boolean
     Public UsartPorts As Integer
+    Public usartrxcontrol As Integer
 
-    Public recipesdirectory As String
-    Public settingsdirectory As String
+    Public filedirectory As String
+    Public filename As String
     Public filesystem As Integer
 
-    Public readrecipeindex As Integer
-    Public readrecipecontroll As Boolean
+    Public recipeindex As Integer
+    Public recipecontroll As Boolean
+
+    Public recipelist(500) As String
 
 #End Region
 

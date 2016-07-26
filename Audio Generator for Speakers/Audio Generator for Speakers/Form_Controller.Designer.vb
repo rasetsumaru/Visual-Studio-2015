@@ -30,6 +30,7 @@ Partial Class Form_Controller
         Me.ButtonRead = New System.Windows.Forms.Button()
         Me.TextBoxRead = New System.Windows.Forms.TextBox()
         Me.ButtonReadAll = New System.Windows.Forms.Button()
+        Me.ButtonOpen = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ButtonConnect
@@ -73,9 +74,9 @@ Partial Class Form_Controller
         Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(12, 409)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(39, 13)
+        Me.Label1.Size = New System.Drawing.Size(49, 13)
         Me.Label1.TabIndex = 5
-        Me.Label1.Text = "Label1"
+        Me.Label1.Text = "00:00:00"
         '
         'ButtonRead
         '
@@ -103,11 +104,21 @@ Partial Class Form_Controller
         Me.ButtonReadAll.Text = "Read all"
         Me.ButtonReadAll.UseVisualStyleBackColor = True
         '
+        'ButtonOpen
+        '
+        Me.ButtonOpen.Location = New System.Drawing.Point(207, 300)
+        Me.ButtonOpen.Name = "ButtonOpen"
+        Me.ButtonOpen.Size = New System.Drawing.Size(75, 23)
+        Me.ButtonOpen.TabIndex = 13
+        Me.ButtonOpen.Text = "Open"
+        Me.ButtonOpen.UseVisualStyleBackColor = True
+        '
         'Form_Controller
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(311, 434)
+        Me.Controls.Add(Me.ButtonOpen)
         Me.Controls.Add(Me.ButtonReadAll)
         Me.Controls.Add(Me.TextBoxRead)
         Me.Controls.Add(Me.ButtonRead)
@@ -133,4 +144,5 @@ Partial Class Form_Controller
     Friend WithEvents ButtonRead As System.Windows.Forms.Button
     Friend WithEvents TextBoxRead As System.Windows.Forms.TextBox
     Friend WithEvents ButtonReadAll As System.Windows.Forms.Button
+    Friend WithEvents ButtonOpen As Button
 End Class

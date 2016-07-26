@@ -18,6 +18,7 @@ Public Class Form_Controller
     Public WithEvents _TimerNow As New System.Windows.Forms.Timer
     Public WithEvents _TimerConnected As New System.Windows.Forms.Timer
     Public WithEvents _TimerUsartTx As New System.Windows.Forms.Timer
+    Public WithEvents _TimerUsartRx As New System.Windows.Forms.Timer
 
     Private Declare Auto Function WritePrivateProfileString Lib "Kernel32" (ByVal lpAppName As String, ByVal lpKeyName As String, ByVal ByVallpString As String, ByVal lpFileName As String) As Integer
 
@@ -72,6 +73,7 @@ Public Class Form_Controller
 
         checksumstring += checksum.ToString
         _SerialPort.Write("@" + SerialData + "%" + checksumstring + "#" + vbLf)
+        _TimerUsartRx.Start()
 
     End Sub
 
@@ -128,10 +130,18 @@ Public Class Form_Controller
                 .Stop()
             End With
 
+            With _TimerUsartRx
+                .Enabled = True
+                .Interval = 100
+                .Stop()
+            End With
+
+
+
             Me.ButtonOpenFile.Enabled = False
             Me.ButtonSaveFile.Enabled = False
 
-            readrecipecontroll = False
+            recipecontroll = False
 
         Catch ex As Exception
 
@@ -216,6 +226,7 @@ Public Class Form_Controller
         Try
 
             _TimerUsartTx.Stop()
+
             If UsartConnected = False Then
                 _SerialPort_Connect(UsartTx)
                 _TimerConnected.Start()
@@ -229,6 +240,28 @@ Public Class Form_Controller
             'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
+
+    End Sub
+
+    Public Sub _TimerUsartRx_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles _TimerUsartRx.Tick
+
+        Try
+
+            _TimerUsartRx.Stop()
+
+            If usartrxcontrol < 3 Then
+                _TimerUsartTx.Start()
+                usartrxcontrol = usartrxcontrol + 1
+            Else
+                MsgBox("Falha de comunicação")
+            End If
+
+        Catch ex As Exception
+
+            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
+
     End Sub
 
 #End Region
@@ -260,7 +293,7 @@ Public Class Form_Controller
             ' file type selected in the dialog box.
             ' NOTE that the FilterIndex property is one-based.
 
-            recipesdirectory = _saveFileDialog.FileName
+            filedirectory = _saveFileDialog.FileName
             filesystem = _saveFileDialog.FilterIndex
             MsgBox(path)
             'fs.Close()
@@ -320,6 +353,8 @@ Public Class Form_Controller
 
         Dim pointer As String
 
+        usartrxcontrol = 0
+
         pointer = Me.TextBoxRead.Text
 
         For i As Integer = 0 To 2 - pointer.Length
@@ -330,13 +365,13 @@ Public Class Form_Controller
 
         _SerialPort_DataSend(UsartTx)
 
-
     End Sub
 
     Private Sub ButtonReadAll_Click(sender As Object, e As EventArgs) Handles ButtonReadAll.Click
 
-        readrecipecontroll = True
-        readrecipeindex = 1
+        recipecontroll = True
+        usartrxcontrol = 0
+        recipeindex = 1
         ReadAllRecipes()
 
     End Sub
@@ -356,5 +391,35 @@ Public Class Form_Controller
         End If
 
     End Sub
+
+#Region "Control buttons"
+
+    Private Sub ButtonOpen_Click(sender As Object, e As EventArgs) Handles ButtonOpen.Click
+
+        Dim _saveFileDialog As New SaveFileDialog()
+
+        With _saveFileDialog
+            .Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
+            .Title = "Save an SGS 500 file"
+            .FilterIndex = 1
+            .ShowDialog()
+            .RestoreDirectory = True
+            .CheckFileExists = True
+            .CheckPathExists = True
+        End With
+
+        If _saveFileDialog.FileName <> "" Then
+
+            filedirectory = System.IO.Path.GetDirectoryName(_saveFileDialog.FileName)
+            filename = System.IO.Path.GetFileName(_saveFileDialog.FileName)
+            filesystem = _saveFileDialog.FilterIndex
+
+            Connected()
+
+        End If
+
+    End Sub
+
+#End Region
 
 End Class
