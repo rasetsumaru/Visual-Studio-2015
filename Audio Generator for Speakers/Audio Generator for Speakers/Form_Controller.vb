@@ -17,7 +17,7 @@ Public Class Form_Controller
     Public WithEvents _SerialPort As New SerialPort
     Public WithEvents _TimerNow As New System.Windows.Forms.Timer
     Public WithEvents _TimerConnected As New System.Windows.Forms.Timer
-    Public WithEvents _TimerUsartRx As New System.Windows.Forms.Timer
+    Public WithEvents _TimerUsartTx As New System.Windows.Forms.Timer
 
     Private Declare Auto Function WritePrivateProfileString Lib "Kernel32" (ByVal lpAppName As String, ByVal lpKeyName As String, ByVal ByVallpString As String, ByVal lpFileName As String) As Integer
 
@@ -49,7 +49,7 @@ Public Class Form_Controller
 
     Public Sub _SerialPort_DataSend(SerialData As String)
 
-        For i As Byte = 0 To 68 - SerialData.Length - 1
+        For i As Byte = 0 To 69 - SerialData.Length - 1
             SerialData += " "
         Next
 
@@ -118,18 +118,20 @@ Public Class Form_Controller
 
             With _TimerConnected
                 .Enabled = True
-                .Interval = 1000
+                .Interval = 1500
                 .Stop()
             End With
 
-            With _TimerUsartRx
+            With _TimerUsartTx
                 .Enabled = True
-                .Interval = 1500
+                .Interval = 100
                 .Stop()
             End With
 
             Me.ButtonOpenFile.Enabled = False
             Me.ButtonSaveFile.Enabled = False
+
+            readrecipecontroll = False
 
         Catch ex As Exception
 
@@ -144,28 +146,7 @@ Public Class Form_Controller
 
     Public Sub ButtonConnect_Click(sender As Object, e As EventArgs) Handles ButtonConnect.Click
 
-        Try
-
-            If UsartConnected = False Then
-                UsartPorts = -1
-                _SerialPortGetNames()
-                _TimerConnected.Start()
-
-                Me.ButtonConnect.Enabled = False
-
-            Else
-
-                UsartTx = "WC0000"
-                _TimerUsartRx.Start()
-                Me.ButtonConnect.Enabled = False
-
-            End If
-
-        Catch ex As Exception
-
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
-
-        End Try
+        Connected()
 
     End Sub
 
@@ -203,7 +184,8 @@ Public Class Form_Controller
                         _SerialList.SelectedIndex = UsartPorts
                         _SerialPortSetup()
                         _SerialPort.Open()
-                        _TimerUsartRx.Start()
+                        _SerialPort.WriteLine(vbLf)
+                        _TimerUsartTx.Start()
 
                     Catch ex As Exception
 
@@ -211,7 +193,7 @@ Public Class Form_Controller
 
                     End Try
 
-                    UsartTx = "WC0001"
+                    UsartTx = "WC00001"
 
                 Else
 
@@ -229,16 +211,17 @@ Public Class Form_Controller
         End Try
     End Sub
 
-    Public Sub _TimerUsartRx_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles _TimerUsartRx.Tick
+    Public Sub _TimerUsartTx_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles _TimerUsartTx.Tick
 
         Try
 
-            _TimerUsartRx.Stop()
+            _TimerUsartTx.Stop()
             If UsartConnected = False Then
                 _SerialPort_Connect(UsartTx)
                 _TimerConnected.Start()
             Else
                 _SerialPort_DataSend(UsartTx)
+
             End If
 
         Catch ex As Exception
@@ -255,24 +238,32 @@ Public Class Form_Controller
         ' Displays a SaveFileDialog so the user can save the Image
         ' assigned to Button2.
         Dim _saveFileDialog As New SaveFileDialog()
-        _saveFileDialog.Filter = "SGS 300 recipes|*.sgsr|SGS 300 settings|*.sgss"
-        _saveFileDialog.Title = "Save an SGS 300 file"
+        _saveFileDialog.Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
+        _saveFileDialog.Title = "Save an SGS 500 file"
         _saveFileDialog.FilterIndex = 1
         _saveFileDialog.ShowDialog()
+        _saveFileDialog.RestoreDirectory = True
+        _saveFileDialog.CheckFileExists = True
+        _saveFileDialog.CheckPathExists = True
 
         ' If the file name is not an empty string open it for saving.
         If _saveFileDialog.FileName <> "" Then
             ' Saves the Image via a FileStream created by the OpenFile method.
-            Dim fs As System.IO.FileStream = CType _
-               (_saveFileDialog.OpenFile(), System.IO.FileStream)
+
+            'Dim fs As System.IO.FileStream = CType _
+            '(_saveFileDialog.OpenFile(), System.IO.FileStream)
+
+            Dim path As String = System.IO.Path.GetDirectoryName(_saveFileDialog.FileName)
+            Dim file As String = System.IO.Path.GetFileName(_saveFileDialog.FileName)
+
             ' Saves the Image in the appropriate ImageFormat based upon the
             ' file type selected in the dialog box.
             ' NOTE that the FilterIndex property is one-based.
 
             recipesdirectory = _saveFileDialog.FileName
             filesystem = _saveFileDialog.FilterIndex
-
-            fs.Close()
+            MsgBox(path)
+            'fs.Close()
         End If
 
     End Sub
@@ -283,8 +274,8 @@ Public Class Form_Controller
         Dim _openFileDialog As New OpenFileDialog()
 
         '_openFileDialog.InitialDirectory = "c:\"
-        _openFileDialog.Filter = "SGS 300 recipes|*.sgsr|SGS 300 settings|*.sgss"
-        _openFileDialog.Title = "Open an SGS 300 file"
+        _openFileDialog.Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
+        _openFileDialog.Title = "Open an SGS 500 file"
         _openFileDialog.FilterIndex = 1
         _openFileDialog.RestoreDirectory = True
 
@@ -306,4 +297,64 @@ Public Class Form_Controller
             End Try
         End If
     End Sub
+
+    Private Sub ButtonClose_Click(sender As Object, e As EventArgs)
+
+        If UsartConnected = False Then
+
+            Me.Close()
+
+        Else
+
+            If MsgBox("Existe um equipamento conectado." + Chr(13) + "Deseja desconectá-lo?", MsgBoxStyle.Question + MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+
+                Connected()
+
+            End If
+
+        End If
+
+    End Sub
+
+    Private Sub ButtonRead_Click(sender As Object, e As EventArgs) Handles ButtonRead.Click
+
+        Dim pointer As String
+
+        pointer = Me.TextBoxRead.Text
+
+        For i As Integer = 0 To 2 - pointer.Length
+            pointer = "0" + pointer
+        Next
+
+        UsartTx = "RR" + pointer
+
+        _SerialPort_DataSend(UsartTx)
+
+
+    End Sub
+
+    Private Sub ButtonReadAll_Click(sender As Object, e As EventArgs) Handles ButtonReadAll.Click
+
+        readrecipecontroll = True
+        readrecipeindex = 1
+        ReadAllRecipes()
+
+    End Sub
+
+    Private Sub Form_Controller_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+
+        If UsartConnected = True Then
+
+            e.Cancel = True
+
+            If MsgBox("Existe um equipamento conectado." + Chr(13) + "Deseja desconectá-lo?", MsgBoxStyle.Question + MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+
+                Connected()
+
+            End If
+
+        End If
+
+    End Sub
+
 End Class

@@ -26,6 +26,9 @@ Module Module_Declarations
     Public settingsdirectory As String
     Public filesystem As Integer
 
+    Public readrecipeindex As Integer
+    Public readrecipecontroll As Boolean
+
 #End Region
 
 End Module
