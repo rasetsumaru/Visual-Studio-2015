@@ -21,16 +21,20 @@ Module Module_Declarations
     Public UsartTx As String
     Public UsartConnected As Boolean
     Public UsartPorts As Integer
-    Public usartrxcontrol As Integer
+    Public UsartRxControl As Integer
+    Public UsartRxTimeout As Integer
 
-    Public filedirectory As String
-    Public filename As String
-    Public filesystem As Integer
+    Public FileDirectory As String
+    Public FileName As String
+    Public FileSystem As Integer
 
-    Public recipeindex As Integer
-    Public recipecontroll As Boolean
+    Public RecipeIndex As Integer
+    Public RecipeControl As Boolean
 
-    Public recipelist(500) As String
+    Public RecipeList(500) As String
+
+
+    Public DirLogsError As String = "C:\Users\raset\Desktop\error.txt"
 
 #End Region
 

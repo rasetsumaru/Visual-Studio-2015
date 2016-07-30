@@ -17,6 +17,7 @@ Public Class Form_Controller
     Public WithEvents _SerialPort As New SerialPort
     Public WithEvents _TimerNow As New System.Windows.Forms.Timer
     Public WithEvents _TimerConnected As New System.Windows.Forms.Timer
+    Public WithEvents _TimerDisconnected As New System.Windows.Forms.Timer
     Public WithEvents _TimerUsartTx As New System.Windows.Forms.Timer
     Public WithEvents _TimerUsartRx As New System.Windows.Forms.Timer
 
@@ -44,45 +45,62 @@ Public Class Form_Controller
 
     Public Sub _SerialPort_Connect(SerialData As String)
 
-        _SerialPort.Write(SerialData + vbLf)
+        Try
+
+            _SerialPort.Write(SerialData + vbLf)
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
 
     End Sub
 
     Public Sub _SerialPort_DataSend(SerialData As String)
 
-        For i As Byte = 0 To 69 - SerialData.Length - 1
-            SerialData += " "
-        Next
+        Try
 
-        Dim array() As Byte = System.Text.Encoding.ASCII.GetBytes(SerialData)
+            For i As Byte = 0 To 69 - SerialData.Length - 1
+                SerialData += " "
+            Next
 
-        Dim checksum As Long
-        Dim datacalculations As Long
-        Dim checksumstring As String = ""
+            Dim array() As Byte = System.Text.Encoding.ASCII.GetBytes(SerialData)
 
-        For i As Byte = 0 To SerialData.Length - 1
-            datacalculations = array(i) * (i + 1)
-            checksum += datacalculations
-        Next
+            Dim checksum As Long
+            Dim datacalculations As Long
+            Dim checksumstring As String = ""
 
-        checksum = checksum Mod 99
+            For i As Byte = 0 To SerialData.Length - 1
+                datacalculations = array(i) * (i + 1)
+                checksum += datacalculations
+            Next
 
-        For i As Byte = 0 To 3 - checksum.ToString.Length - 1
-            checksumstring += "0"
-        Next
+            checksum = checksum Mod 99
 
-        checksumstring += checksum.ToString
-        _SerialPort.Write("@" + SerialData + "%" + checksumstring + "#" + vbLf)
-        _TimerUsartRx.Start()
+            For i As Byte = 0 To 3 - checksum.ToString.Length - 1
+                checksumstring += "0"
+            Next
+
+            checksumstring += checksum.ToString
+            _SerialPort.Write("@" + SerialData + "%" + checksumstring + "#" + vbLf)
+            _TimerUsartRx.Start()
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
 
     End Sub
 
-    Public Sub _SerialPortSetup()
+    Public Sub SerialPortSetup()
 
         Try
 
             If _SerialPort.IsOpen Then
                 _SerialPort.Close()
+                _SerialPort.Dispose()
             End If
 
             With _SerialPort
@@ -92,11 +110,14 @@ Public Class Form_Controller
                 .Parity = Parity.None
                 .StopBits = StopBits.One
                 .Handshake = Handshake.None
+                .ReadTimeout = 200
+                .WriteTimeout = 200
+                .RtsEnable = True
             End With
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
@@ -111,7 +132,7 @@ Public Class Form_Controller
         Try
 
             UsartConnected = False
-            filesystem = 0
+            FileSystem = 0
 
             With _TimerNow
                 .Enabled = True
@@ -119,6 +140,12 @@ Public Class Form_Controller
             End With
 
             With _TimerConnected
+                .Enabled = True
+                .Interval = 1500
+                .Stop()
+            End With
+
+            With _TimerDisconnected
                 .Enabled = True
                 .Interval = 1500
                 .Stop()
@@ -141,13 +168,14 @@ Public Class Form_Controller
             Me.ButtonOpenFile.Enabled = False
             Me.ButtonSaveFile.Enabled = False
 
-            recipecontroll = False
+            RecipeControl = False
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
+
     End Sub
 
 #End Region
@@ -156,7 +184,15 @@ Public Class Form_Controller
 
     Public Sub ButtonConnect_Click(sender As Object, e As EventArgs) Handles ButtonConnect.Click
 
-        Connected()
+        Try
+
+            Connected()
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
 
     End Sub
 
@@ -172,7 +208,7 @@ Public Class Form_Controller
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
@@ -186,15 +222,20 @@ Public Class Form_Controller
 
             If UsartConnected = False Then
 
-                UsartPorts += 1
+                If UsartRxControl < 3 Then
+                    UsartRxControl += 1
+                Else
+                    UsartRxControl = 0
+                    UsartPorts += 1
+                End If
 
                 If _SerialList.Items.Count > 0 And UsartPorts <= _SerialList.Items.Count - 1 Then
 
                     Try
                         _SerialList.SelectedIndex = UsartPorts
-                        _SerialPortSetup()
+                        SerialPortSetup()
                         _SerialPort.Open()
-                        _SerialPort.WriteLine(vbLf)
+                        _SerialPort.Write(vbLf)
                         _TimerUsartTx.Start()
 
                     Catch ex As Exception
@@ -216,9 +257,26 @@ Public Class Form_Controller
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
+
+    End Sub
+
+    Public Sub _TimerDisconnected_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles _TimerDisconnected.Tick
+
+        Try
+
+            _TimerDisconnected.Stop()
+            Disconnected()
+            MsgBox("Falha de comunicação")
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
+
     End Sub
 
     Public Sub _TimerUsartTx_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles _TimerUsartTx.Tick
@@ -232,12 +290,11 @@ Public Class Form_Controller
                 _TimerConnected.Start()
             Else
                 _SerialPort_DataSend(UsartTx)
-
             End If
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
@@ -249,16 +306,21 @@ Public Class Form_Controller
 
             _TimerUsartRx.Stop()
 
-            If usartrxcontrol < 3 Then
-                _TimerUsartTx.Start()
-                usartrxcontrol = usartrxcontrol + 1
-            Else
-                MsgBox("Falha de comunicação")
+            If UsartConnected = True Then
+
+                If UsartRxTimeout < 3 Then
+                    _TimerUsartTx.Start()
+                    UsartRxTimeout += 1
+                Else
+                    Me._TimerDisconnected.Start()
+                    Connected()
+                End If
+
             End If
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
@@ -268,127 +330,179 @@ Public Class Form_Controller
 
     Private Sub ButtonSaveFile_Click(sender As Object, e As EventArgs) Handles ButtonSaveFile.Click
 
-        ' Displays a SaveFileDialog so the user can save the Image
-        ' assigned to Button2.
-        Dim _saveFileDialog As New SaveFileDialog()
-        _saveFileDialog.Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
-        _saveFileDialog.Title = "Save an SGS 500 file"
-        _saveFileDialog.FilterIndex = 1
-        _saveFileDialog.ShowDialog()
-        _saveFileDialog.RestoreDirectory = True
-        _saveFileDialog.CheckFileExists = True
-        _saveFileDialog.CheckPathExists = True
+        Try
 
-        ' If the file name is not an empty string open it for saving.
-        If _saveFileDialog.FileName <> "" Then
-            ' Saves the Image via a FileStream created by the OpenFile method.
+            ' Displays a SaveFileDialog so the user can save the Image
+            ' assigned to Button2.
+            Dim _saveFileDialog As New SaveFileDialog()
+            _saveFileDialog.Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
+            _saveFileDialog.Title = "Save an SGS 500 file"
+            _saveFileDialog.FilterIndex = 1
+            _saveFileDialog.ShowDialog()
+            _saveFileDialog.RestoreDirectory = True
+            _saveFileDialog.CheckFileExists = True
+            _saveFileDialog.CheckPathExists = True
 
-            'Dim fs As System.IO.FileStream = CType _
-            '(_saveFileDialog.OpenFile(), System.IO.FileStream)
+            ' If the file name is not an empty string open it for saving.
+            If _saveFileDialog.FileName <> "" Then
+                ' Saves the Image via a FileStream created by the OpenFile method.
 
-            Dim path As String = System.IO.Path.GetDirectoryName(_saveFileDialog.FileName)
-            Dim file As String = System.IO.Path.GetFileName(_saveFileDialog.FileName)
+                'Dim fs As System.IO.FileStream = CType _
+                '(_saveFileDialog.OpenFile(), System.IO.FileStream)
 
-            ' Saves the Image in the appropriate ImageFormat based upon the
-            ' file type selected in the dialog box.
-            ' NOTE that the FilterIndex property is one-based.
+                Dim path As String = System.IO.Path.GetDirectoryName(_saveFileDialog.FileName)
+                Dim file As String = System.IO.Path.GetFileName(_saveFileDialog.FileName)
 
-            filedirectory = _saveFileDialog.FileName
-            filesystem = _saveFileDialog.FilterIndex
-            MsgBox(path)
-            'fs.Close()
-        End If
+                ' Saves the Image in the appropriate ImageFormat based upon the
+                ' file type selected in the dialog box.
+                ' NOTE that the FilterIndex property is one-based.
+
+                FileDirectory = _saveFileDialog.FileName
+                FileSystem = _saveFileDialog.FilterIndex
+                MsgBox(path)
+                'fs.Close()
+            End If
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
 
     End Sub
 
     Private Sub ButtonOpenFile_Click(sender As Object, e As EventArgs) Handles ButtonOpenFile.Click
 
-        Dim myStream As Stream = Nothing
-        Dim _openFileDialog As New OpenFileDialog()
+        Try
 
-        '_openFileDialog.InitialDirectory = "c:\"
-        _openFileDialog.Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
-        _openFileDialog.Title = "Open an SGS 500 file"
-        _openFileDialog.FilterIndex = 1
-        _openFileDialog.RestoreDirectory = True
+            Dim myStream As Stream = Nothing
+            Dim _openFileDialog As New OpenFileDialog()
 
-        If _openFileDialog.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
-            Try
-                myStream = _openFileDialog.OpenFile()
-                If (myStream IsNot Nothing) Then
-                    ' Insert code to read the stream here.
+            '_openFileDialog.InitialDirectory = "c:\"
+            _openFileDialog.Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
+            _openFileDialog.Title = "Open an SGS 500 file"
+            _openFileDialog.FilterIndex = 1
+            _openFileDialog.RestoreDirectory = True
 
-                    MsgBox("Aberto")
-                End If
-            Catch Ex As Exception
-                MessageBox.Show("Cannot read file from disk. Original error: " & Ex.Message)
-            Finally
-                ' Check this again, since we need to make sure we didn't throw an exception on open.
-                If (myStream IsNot Nothing) Then
-                    myStream.Close()
-                End If
-            End Try
-        End If
+            If _openFileDialog.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
+                Try
+                    myStream = _openFileDialog.OpenFile()
+                    If (myStream IsNot Nothing) Then
+                        ' Insert code to read the stream here.
+
+                        MsgBox("Aberto")
+                    End If
+                Catch Ex As Exception
+                    MessageBox.Show("Cannot read file from disk. Original error: " & Ex.Message)
+                Finally
+                    ' Check this again, since we need to make sure we didn't throw an exception on open.
+                    If (myStream IsNot Nothing) Then
+                        myStream.Close()
+                    End If
+                End Try
+            End If
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
+
     End Sub
 
     Private Sub ButtonClose_Click(sender As Object, e As EventArgs)
 
-        If UsartConnected = False Then
+        Try
 
-            Me.Close()
+            If UsartConnected = False Then
 
-        Else
+                Me.Close()
 
-            If MsgBox("Existe um equipamento conectado." + Chr(13) + "Deseja desconectá-lo?", MsgBoxStyle.Question + MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+            Else
 
-                Connected()
+                If MsgBox("Existe um equipamento conectado." + Chr(13) + "Deseja desconectá-lo?", MsgBoxStyle.Question + MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+
+                    Connected()
+
+                End If
 
             End If
 
-        End If
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
 
     End Sub
 
     Private Sub ButtonRead_Click(sender As Object, e As EventArgs) Handles ButtonRead.Click
 
-        Dim pointer As String
+        Try
 
-        usartrxcontrol = 0
+            Dim pointer As String
 
-        pointer = Me.TextBoxRead.Text
+            UsartRxControl = 0
+            UsartRxTimeout = 0
 
-        For i As Integer = 0 To 2 - pointer.Length
-            pointer = "0" + pointer
-        Next
+            pointer = Me.TextBoxRead.Text
 
-        UsartTx = "RR" + pointer
+            For i As Integer = 0 To 2 - pointer.Length
+                pointer = "0" + pointer
+            Next
 
-        _SerialPort_DataSend(UsartTx)
+            UsartTx = "RR" + pointer
+
+            _SerialPort_DataSend(UsartTx)
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
 
     End Sub
 
     Private Sub ButtonReadAll_Click(sender As Object, e As EventArgs) Handles ButtonReadAll.Click
 
-        recipecontroll = True
-        usartrxcontrol = 0
-        recipeindex = 1
-        ReadAllRecipes()
+        Try
+
+            RecipeControl = True
+            UsartRxControl = 0
+            UsartRxTimeout = 0
+            RecipeIndex = 1
+            ReadAllRecipes()
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
+
 
     End Sub
 
     Private Sub Form_Controller_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
 
-        If UsartConnected = True Then
+        Try
 
-            e.Cancel = True
+            If UsartConnected = True Then
 
-            If MsgBox("Existe um equipamento conectado." + Chr(13) + "Deseja desconectá-lo?", MsgBoxStyle.Question + MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+                e.Cancel = True
 
-                Connected()
+                If MsgBox("Existe um equipamento conectado." + Chr(13) + "Deseja desconectá-lo?", MsgBoxStyle.Question + MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
+
+                    Connected()
+
+                End If
 
             End If
 
-        End If
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
 
     End Sub
 
@@ -396,27 +510,33 @@ Public Class Form_Controller
 
     Private Sub ButtonOpen_Click(sender As Object, e As EventArgs) Handles ButtonOpen.Click
 
-        Dim _saveFileDialog As New SaveFileDialog()
+        Try
 
-        With _saveFileDialog
-            .Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
-            .Title = "Save an SGS 500 file"
-            .FilterIndex = 1
-            .ShowDialog()
-            .RestoreDirectory = True
-            .CheckFileExists = True
-            .CheckPathExists = True
-        End With
+            Dim _saveFileDialog As New SaveFileDialog()
 
-        If _saveFileDialog.FileName <> "" Then
+            With _saveFileDialog
+                .Filter = "SGS 500 recipes|*.sgsr|SGS 500 settings|*.sgss"
+                .Title = "Save an SGS 500 file"
+                .FilterIndex = 1
+                .ShowDialog()
+                .RestoreDirectory = True
+                .CheckFileExists = True
+                .CheckPathExists = True
+            End With
 
-            filedirectory = System.IO.Path.GetDirectoryName(_saveFileDialog.FileName)
-            filename = System.IO.Path.GetFileName(_saveFileDialog.FileName)
-            filesystem = _saveFileDialog.FilterIndex
+            If _saveFileDialog.FileName <> "" Then
 
-            Connected()
+                FileDirectory = System.IO.Path.GetDirectoryName(_saveFileDialog.FileName)
+                FileName = System.IO.Path.GetFileName(_saveFileDialog.FileName)
+                FileSystem = _saveFileDialog.FilterIndex
 
-        End If
+            End If
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
 
     End Sub
 

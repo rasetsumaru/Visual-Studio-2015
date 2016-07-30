@@ -61,7 +61,7 @@ Module Module_Function
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
@@ -74,7 +74,9 @@ Module Module_Function
 
         Try
 
+            Form_Controller._TimerUsartRx.Stop()
             Form_Controller.TextBoxReceiver.Text = UsartRx
+            UsartRxTimeout = 0
 
             If Strings.Left(UsartRx, 1) = "@" And Strings.Right(UsartRx, 1) = "#" Then
 
@@ -96,7 +98,16 @@ Module Module_Function
                 checksum = checksum Mod 99
 
                 If checksum = Convert.ToInt16(SerialChecksum) Then
+                    UsartRxControl = 0
                     SerialDecoder(SerialData)
+                Else
+                    If UsartRxControl < 3 Then
+                        Form_Controller._TimerUsartTx.Start()
+                        UsartRxControl = UsartRxControl + 1
+                    Else
+                        Form_Controller._TimerDisconnected.Start()
+                        Connected()
+                    End If
 
                 End If
 
@@ -105,7 +116,7 @@ Module Module_Function
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
@@ -118,8 +129,6 @@ Module Module_Function
         Dim Data As String = Decoder.Substring(5, 64)
 
         Try
-
-            Form_Controller._TimerUsartRx.Stop()
 
             If Header.Equals("RC") Then
 
@@ -139,18 +148,26 @@ Module Module_Function
 
                     If Data.Substring(0, 2) = "00" Then
                         UsartConnected = False
+                        RecipeControl = False
+
                         UsartRx = ""
 
                         If _SerialPort.IsOpen Then
                             _SerialPort.Close()
+                            _SerialPort.Dispose()
                         End If
 
                         With Form_Controller.ButtonConnect
                             .Text = "Connect"
                             .Enabled = True
                         End With
+
                         Form_Controller.ButtonOpenFile.Enabled = False
                         Form_Controller.ButtonSaveFile.Enabled = False
+                        Form_Controller._TimerDisconnected.Stop()
+                        Form_Controller._TimerConnected.Stop()
+                        Form_Controller._TimerUsartTx.Stop()
+                        Form_Controller._TimerUsartRx.Stop()
                         MsgBox("USB disconnected")
                         GoTo Fim
                     End If
@@ -162,18 +179,18 @@ Module Module_Function
 
                 RecordRecipe()
 
-                If recipecontroll = True And recipeindex < 500 Then
-                    recipeindex = recipeindex + 1
+                If RecipeControl = True And RecipeIndex < 500 Then
+                    RecipeIndex = RecipeIndex + 1
                     ReadAllRecipes()
                 Else
-                    recipecontroll = False
+                    RecipeControl = False
                 End If
 
             End If
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
@@ -185,11 +202,13 @@ Fim:
 
         Try
 
+            UsartRxControl = 0
+            UsartRxTimeout = 0
+
             If UsartConnected = False Then
-                UsartPorts = -1
+                UsartPorts = 0
                 _SerialPortGetNames()
                 Form_Controller._TimerConnected.Start()
-
                 Form_Controller.ButtonConnect.Enabled = False
 
             Else
@@ -202,7 +221,43 @@ Fim:
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
+
+    End Sub
+
+    Public Sub Disconnected()
+
+        Try
+
+            Form_Controller._TimerConnected.Stop()
+            Form_Controller._TimerUsartTx.Stop()
+            Form_Controller._TimerUsartRx.Stop()
+
+            UsartConnected = False
+            RecipeControl = False
+
+            UsartRx = ""
+
+            Form_Controller.ButtonOpenFile.Enabled = False
+            Form_Controller.ButtonSaveFile.Enabled = False
+
+            With Form_Controller.ButtonConnect
+                .Text = "Connect"
+                .Enabled = True
+            End With
+
+            If _SerialPort.IsOpen Then
+                _SerialPort.Close()
+                _SerialPort.Dispose()
+            End If
+
+            _SerialList.Items.Clear()
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
@@ -214,7 +269,7 @@ Fim:
 
         Dim pointer As String
 
-        pointer = recipeindex.ToString
+        pointer = RecipeIndex.ToString
 
         For i As Integer = 0 To 2 - pointer.Length
             pointer = "0" + pointer
@@ -241,7 +296,7 @@ Fim:
 
         Catch ex As Exception
 
-            'WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
 
