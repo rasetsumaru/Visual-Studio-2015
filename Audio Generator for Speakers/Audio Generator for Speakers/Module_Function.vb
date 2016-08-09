@@ -152,10 +152,8 @@ Module Module_Function
 
                         UsartRx = ""
 
-                        If _SerialPort.IsOpen Then
-                            _SerialPort.Close()
-                            _SerialPort.Dispose()
-                        End If
+                        _SerialPort.Close()
+                        _SerialPort.Dispose()
 
                         With Form_Controller.ButtonConnect
                             .Text = "Connect"

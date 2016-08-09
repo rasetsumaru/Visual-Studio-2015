@@ -31,6 +31,8 @@ Partial Class Form_Controller
         Me.TextBoxRead = New System.Windows.Forms.TextBox()
         Me.ButtonReadAll = New System.Windows.Forms.Button()
         Me.ButtonOpen = New System.Windows.Forms.Button()
+        Me.ButtonVersion = New System.Windows.Forms.Button()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'ButtonConnect
@@ -113,11 +115,31 @@ Partial Class Form_Controller
         Me.ButtonOpen.Text = "Open"
         Me.ButtonOpen.UseVisualStyleBackColor = True
         '
+        'ButtonVersion
+        '
+        Me.ButtonVersion.Location = New System.Drawing.Point(24, 315)
+        Me.ButtonVersion.Name = "ButtonVersion"
+        Me.ButtonVersion.Size = New System.Drawing.Size(75, 23)
+        Me.ButtonVersion.TabIndex = 14
+        Me.ButtonVersion.Text = "Version"
+        Me.ButtonVersion.UseVisualStyleBackColor = True
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(24, 22)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 15
+        Me.Button1.Text = "Button1"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'Form_Controller
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(311, 434)
+        Me.Controls.Add(Me.Button1)
+        Me.Controls.Add(Me.ButtonVersion)
         Me.Controls.Add(Me.ButtonOpen)
         Me.Controls.Add(Me.ButtonReadAll)
         Me.Controls.Add(Me.TextBoxRead)
@@ -145,4 +167,6 @@ Partial Class Form_Controller
     Friend WithEvents TextBoxRead As System.Windows.Forms.TextBox
     Friend WithEvents ButtonReadAll As System.Windows.Forms.Button
     Friend WithEvents ButtonOpen As Button
+    Friend WithEvents ButtonVersion As Button
+    Friend WithEvents Button1 As Button
 End Class

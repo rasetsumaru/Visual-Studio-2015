@@ -103,16 +103,17 @@ Public Class Form_Controller
                 _SerialPort.Dispose()
             End If
 
+            _SerialPort = New SerialPort
+
             With _SerialPort
                 .PortName = _SerialList.SelectedItem
                 .BaudRate = 115200
                 .DataBits = 8
                 .Parity = Parity.None
                 .StopBits = StopBits.One
-                .Handshake = Handshake.None
+                .Handshake = Handshake.RequestToSend
                 .ReadTimeout = 200
                 .WriteTimeout = 200
-                .RtsEnable = True
             End With
 
         Catch ex As Exception
@@ -280,7 +281,7 @@ Public Class Form_Controller
     End Sub
 
     Public Sub _TimerUsartTx_Tick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles _TimerUsartTx.Tick
-
+        'merda
         Try
 
             _TimerUsartTx.Stop()
@@ -537,6 +538,28 @@ Public Class Form_Controller
             WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
 
         End Try
+
+    End Sub
+
+    Private Sub ButtonVersion_Click(sender As Object, e As EventArgs) Handles ButtonVersion.Click
+
+        Try
+
+            UsartTx = "RV000"
+
+            _SerialPort_DataSend(UsartTx)
+
+        Catch ex As Exception
+
+            WritePrivateProfileString("Error >> " & Format(Now, "MM/dd/yyyy"), " >> " & Format(Now, "HH:mm:ss") & " >> Erro = ", ex.Message & " - " & ex.StackTrace & " - " & ex.Source, nomeArquivoINI(DirLogsError))
+
+        End Try
+
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+        MsgBox(_SerialPort.IsOpen)
 
     End Sub
 
